@@ -1,0 +1,137 @@
+'use client'
+
+import React, { useState, useEffect } from 'react';
+import { XIcon, MenuIcon, SunIcon, WindIcon, Leaf, AlertTriangle, Newspaper, Heart,User } from 'lucide-react';
+
+const Sidebar = ({ isOpen, toggleSidebar }) => (
+  <div
+    className={`fixed left-0 top-0 h-full bg-green-800 text-white transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-0'} overflow-hidden z-50`}>
+    <button onClick={toggleSidebar} className="absolute top-4 right-4 text-white">
+      <XIcon size={24} />
+    </button>
+    <nav className="mt-16 p-4">
+      <ul className="space-y-4">
+        <li><a href="#" className="block py-2 hover:bg-green-700 rounded">Home</a></li>
+        <li><a href="#" className="block py-2 hover:bg-green-700 rounded">Deforestation Detection</a></li>
+        <li><a href="#" className="block py-2 hover:bg-green-700 rounded">Community Forum</a></li>
+        <li><a href="#" className="block py-2 hover:bg-green-700 rounded">News</a></li>
+      </ul>
+    </nav>
+  </div>
+);
+
+const WeatherAQI = () => (
+  <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 className="text-2xl font-bold mb-4">Weather & AQI</h2>
+    <div className="flex justify-between items-center">
+      <div>
+        <p className="text-4xl font-bold">25°C</p>
+        <p className="text-gray-600">Sunny</p>
+      </div>
+      <div>
+        <p className="text-2xl font-bold">AQI: 42</p>
+        <p className="text-green-600">Good</p>
+      </div>
+    </div>
+    <div className="mt-4 flex justify-between">
+      <div className="flex items-center">
+        <SunIcon className="mr-2 text-yellow-500" />
+        <span>UV Index: 3 (Moderate)</span>
+      </div>
+      <div className="flex items-center">
+        <WindIcon className="mr-2 text-blue-500" />
+        <span>Wind: 5 km/h</span>
+      </div>
+    </div>
+  </div>
+);
+
+const LiveAlerts = () => (
+  <div className="bg-red-100 rounded-lg shadow-md p-6 mb-6">
+    <h2 className="text-2xl font-bold mb-4 flex items-center">
+      <AlertTriangle className="mr-2 text-red-500" />
+      Live Alerts
+    </h2>
+    <ul className="space-y-2">
+      <li className="text-red-700">High pollution levels expected in downtown area</li>
+      <li className="text-orange-700">Moderate deforestation activity detected in Amazon rainforest</li>
+    </ul>
+  </div>
+);
+
+const TreePlantationStats = () => (
+  <div className="bg-green-100 rounded-lg shadow-md p-6 mb-6">
+    <h2 className="text-2xl font-bold mb-4 flex items-center">
+      <Leaf className="mr-2 text-green-500" />
+      Trees Planted
+    </h2>
+    <p className="text-4xl font-bold text-green-700">1,234,567</p>
+    <p className="text-gray-600">Trees planted through our initiatives</p>
+  </div>
+);
+
+const Footer = () => (
+  <footer className="bg-white rounded-lg shadow-md p-6 mt-6">
+    <div
+      className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      <button className="flex items-center text-green-700 hover:text-green-900">
+        <Leaf className="mr-2" />
+        Join Tree Plantation Drive
+      </button>
+      <button className="flex items-center text-blue-700 hover:text-blue-900">
+        <Newspaper className="mr-2" />
+        Environmental News & Blogs
+      </button>
+      <button className="flex items-center text-red-700 hover:text-red-900">
+        <Heart className="mr-2" />
+        Donate
+      </button>
+    </div>
+  </footer>
+);
+
+const HomePage = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    // Simulating API calls for data fetching
+    // In a real application, you would make actual API calls here
+    console.log('Fetching weather and AQI data...');
+    console.log('Fetching live alerts...');
+    console.log('Fetching tree plantation stats...');
+  }, []);
+
+  return (
+    (<div className="min-h-screen bg-gray-100">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div
+        className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
+        <header className="bg-green-800 text-white p-4 flex justify-between items-center">
+          <button onClick={toggleSidebar} className="text-white">
+            <MenuIcon size={24} />
+          </button>
+          <h1 className="text-2xl font-bold">Eco Guard</h1>
+          <Link href="/profile">
+            <a className="text-white hover:text-green-200 transition-colors">
+              <User size={24} />
+            </a>
+          </Link>
+        </header>
+        <main className="container mx-auto px-4 py-8">
+          <WeatherAQI />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <LiveAlerts />
+            <TreePlantationStats />
+          </div>
+          <Footer />
+        </main>
+      </div>
+    </div>)
+  );
+};
+
+export default HomePage;
