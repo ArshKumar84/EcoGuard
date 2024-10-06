@@ -8,6 +8,10 @@ module.exports = {
   ],
   theme: {
   	extend: {
+		animation: {
+			'spin-slow': 'spin-slow 3s linear infinite',
+			'fade-in': 'fade-in 0.5s ease-out',
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
