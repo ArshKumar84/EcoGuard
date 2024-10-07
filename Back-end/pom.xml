@@ -82,6 +82,20 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>3.3.4</version> <!-- Ensure this matches your Spring Boot version -->
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -91,6 +105,7 @@
                 <target>17</target> 
 				</configuration>
 			</plugin>
+		
 		</plugins>
 	</build>
 
