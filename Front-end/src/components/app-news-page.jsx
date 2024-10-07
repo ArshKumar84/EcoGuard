@@ -14,12 +14,13 @@ const NewsPage = () => {
     setLoading(true)
     setError(null) // Reset error
     try {
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&apiKey=f9480aa86ed74aa0887d99d64c602bf7`, {
-        headers: {
-          'Upgrade': 'h2', // Ensure HTTP/2 upgrade if needed
-          'Accept': 'application/json'
-        }
-      });
+     const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&apiKey=f9480aa86ed74aa0887d99d64c602bf7`, {
+  headers: {
+    'Upgrade': 'h2c', // Request an HTTP/2 connection
+    'Accept': 'application/json'
+  }
+});
+
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
