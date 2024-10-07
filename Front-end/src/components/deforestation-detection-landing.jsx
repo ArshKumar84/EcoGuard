@@ -141,7 +141,7 @@ export function DeforestationDetectionLandingJsx() {
   }, [location]);
 
   return (
-    <div className="container mx-auto px-0 py-0">
+    <div className="max-w-full px-0 py-0">
       <header className="bg-green-600 text-white py-6">
         <div className="container mx-auto px-4">
         </div>
