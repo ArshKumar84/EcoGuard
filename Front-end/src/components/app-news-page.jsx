@@ -41,16 +41,7 @@ const NewsPage = () => {
       <header className="bg-green-600 text-white py-4">
         <div className="container mx-auto px-4">
           <p className="text-center mb-4">Stay updated with the latest in environmental protection.</p>
-          <div className="max-w-md mx-auto relative">
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-2 px-4 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400"
-            />
-            <Search className="absolute right-3 top-2.5 text-gray-500" />
-          </div>
+          
         </div>
       </header>
       <main className="container mx-auto px-4 py-8">
