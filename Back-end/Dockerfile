@@ -1,23 +1,30 @@
-# Use an official Maven image to build the app
-FROM maven:3.8.6-openjdk-17-slim AS build
+# Use Ubuntu as the base image for building the application
+FROM ubuntu:latest AS build
 
-# Set the working directory inside the container
+# Update the package manager and install OpenJDK 17
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
+
+# Install Maven
+RUN apt-get install maven -y
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the pom.xml and download the dependencies
+# Copy the pom.xml and download dependencies
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy the rest of the application code
+# Copy the rest of the application source code
 COPY src ./src
 
-# Package the Spring Boot application into a jar file
+# Package the application into a jar file
 RUN mvn package -DskipTests
 
-# Use an official JDK image to run the app
+# Start a new stage for the final image
 FROM openjdk:17-jdk-slim
 
-# Set the working directory for running the jar
+# Set the working directory
 WORKDIR /app
 
 # Copy the jar file from the build stage
