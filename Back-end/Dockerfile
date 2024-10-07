@@ -1,27 +1,30 @@
-# Stage 1: Build the application
-FROM maven:3.9.0-openjdk-21-slim AS build
+# Use an official Maven image to build the app
+FROM maven:3.8.6-openjdk-17-slim AS build
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the pom.xml and the source code
-COPY pom.xml ./
+# Copy the pom.xml and download the dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the application code
 COPY src ./src
 
-# Package the application (skip tests for faster build)
-RUN mvn clean package -DskipTests
+# Package the Spring Boot application into a jar file
+RUN mvn package -DskipTests
 
-# Stage 2: Create the final image
-FROM openjdk:21-jdk-slim
+# Use an official JDK image to run the app
+FROM openjdk:17-jdk-slim
 
-# Set the working directory
+# Set the working directory for running the jar
 WORKDIR /app
 
-# Copy the jar file from the build stage to the final image
+# Copy the jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the application port (default is 8080)
+# Expose the port on which the Spring Boot app runs
 EXPOSE 8080
 
-# Command to run the application
+# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
