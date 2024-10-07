@@ -89,11 +89,6 @@
             <configuration>
                 <source>17</source>  <!-- Set the Java source version -->
                 <target>17</target> 
-					<excludes>
-						<excludes>
-                    <exclude>**/lombok/**</exclude> <!-- Specify files or packages to exclude -->
-                </excludes>
-					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
