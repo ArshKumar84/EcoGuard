@@ -90,10 +90,9 @@
                 <source>17</source>  <!-- Set the Java source version -->
                 <target>17</target> 
 					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
+						<excludes>
+                    <exclude>**/lombok/**</exclude> <!-- Specify files or packages to exclude -->
+                </excludes>
 					</excludes>
 				</configuration>
 			</plugin>
