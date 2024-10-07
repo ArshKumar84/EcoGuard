@@ -98,7 +98,7 @@ const Layout = ({ children }) => {
 
          
         </header>
-        <main className="container mx-auto px-0 py-0">
+        <main className="max-w-full px-0 py-0">
           {children}
         </main>
       </div>
