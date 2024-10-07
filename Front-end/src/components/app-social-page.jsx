@@ -112,7 +112,7 @@ useEffect(() => {
       <header className="bg-green-600 text-white p-4">
        
       </header>
-      <main className="container mx-auto p-4 flex flex-col md:flex-row gap-4">
+      <main className="max-w-full px-0 py-0 flex flex-col md:flex-row gap-4">
         <aside className="md:w-1/4">
           <div className="bg-white rounded-lg shadow p-4 mb-4">
             <h2 className="text-xl font-bold mb-2 flex items-center">
