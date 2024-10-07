@@ -79,7 +79,7 @@ const ProfilePage = () => {
   };
 
   return (
- <div className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex items-center justify-center">
+ <div className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex  justify-center">
   <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl">
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
           {/* Error Message */}
