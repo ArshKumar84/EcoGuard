@@ -14,20 +14,16 @@ EcoGuard is an innovative application aimed at promoting environmental conscious
    - Users can search for specific locations to view deforestation statistics.
    - Utilizes the Sentinel Hub API alongside EcoGuard's AI model to analyze satellite images.
 
-3. **Marketplace:** 
-   - Provides a platform for purchasing eco-friendly products.
-   - Features a nature-themed payment page with secure payment options, including UPI.
-
-4. **Social Section:** 
+3. **Social Section:** 
    - Facilitates user connections for sharing stories and experiences related to reforestation and environmental protection.
 
-5. **User Profile:** 
+4. **User Profile:** 
    - Displays user information including name, username, location (area, district, state, country), and the number of trees planted.
 
-6. **News Section:** 
+5. **News Section:** 
    - Offers updates on environmental news, reforestation efforts, and global sustainability projects.
 
-7. **OTP Verification:** 
+6. **OTP Verification:** 
    - Ensures secure access for sensitive actions like payments and profile settings.
 
 **Tech Stack:**
