@@ -7,11 +7,12 @@ import cv2
 import base64
 from geopy.geocoders import Nominatim
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "http://ecoguard-522e.onrender.com",
 ]
 
 app.add_middleware(
@@ -27,8 +28,8 @@ clf = joblib.load('./deforestation_percentage_model_intel_1.joblib')
 
 
 config = SHConfig()
-config.sh_client_id = 'a14c2ad8-e87d-42c4-be03-44d993bd8729'  
-config.sh_client_secret = 'JGnPUfQwhncd95KeDtEfy3a1rzXVGK3u' 
+config.sh_client_id =os.getenv('SENTINENTAL_ID')
+config.sh_client_secret =os.getenv('SENTINENTAL_PASS')
 
 
 class DeforestationRequest(BaseModel):
