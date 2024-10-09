@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/posts")
 @ResponseBody
+@CrossOrigin(origins = "https://eco-guard-ten.vercel.app")
 
 public class PostController {
     PostServiceImpl service;
