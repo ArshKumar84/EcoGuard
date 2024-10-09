@@ -75,10 +75,11 @@ const AuthPage = () => {
       element.nextSibling.focus();
     }
   };
-
+console.log(otp);
   const handleVerifyOTP = async () => {
     setIsLoading(true);
     const enteredOTP = otp.join('');
+    console.log(enteredOTP)
     try {
       // Replace this with your actual OTP verification API call
       const response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users/verify-otp", {
