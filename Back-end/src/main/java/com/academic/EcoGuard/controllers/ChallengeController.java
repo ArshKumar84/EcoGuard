@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/challenges")
 @ResponseBody
-
+@AllArgsConstructor
+//@NoArgsConstructor
 public class ChallengeController {
+
     ChallengeServiceImpl service;
+
 
     @PostMapping("join/{id}")
     ResponseEntity<ChallengeDto> join(@PathVariable("id") String userId, @RequestBody ChallengeDto dto)
