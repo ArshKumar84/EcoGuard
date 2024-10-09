@@ -85,6 +85,7 @@ const AuthPage = () => {
         userId: userData.id,
         otp: enteredOTP
       });
+      console.log(enteredOTP);
       
       if (response.data.verified) {
         dispatch(setUserId(userData.id));
