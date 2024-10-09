@@ -75,18 +75,16 @@ const AuthPage = () => {
       element.nextSibling.focus();
     }
   };
-console.log(otp);
+
   const handleVerifyOTP = async () => {
     setIsLoading(true);
     const enteredOTP = otp.join('');
-    console.log(enteredOTP)
     try {
-      // Replace this with your actual OTP verification API call
+      // OTP verification API call
       const response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users/verify-otp", {
         userId: userData.id,
         otp: enteredOTP
       });
-      console.log(enteredOTP);
       
       if (response.data.verified) {
         dispatch(setUserId(userData.id));
@@ -230,7 +228,7 @@ console.log(otp);
               disabled={isLoading}
               className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isLoading && 'opacity-50'}`}
             >
-              {isLoading ? "Loading..." : isSignUp ? "Sign Up" : "Log In"}
+              {isLoading ? "Submitting..." : (isSignUp ? "Sign Up" : "Log In")}
             </button>
           </form>
         )}
@@ -239,21 +237,17 @@ console.log(otp);
   );
 };
 
-// Reusable Input Component
 const InputField = ({ id, name, type, icon, placeholder, required }) => (
-  <div>
-    <label htmlFor={id} className="sr-only">{placeholder}</label>
-    <div className="flex items-center">
-      {icon}
-      <input
-        id={id}
-        name={name}
-        type={type}
-        required={required}
-        className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-        placeholder={placeholder}
-      />
-    </div>
+  <div className="relative">
+    {icon}
+    <input
+      id={id}
+      name={name}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      className="appearance-none rounded-md relative block w-full px-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+    />
   </div>
 );
 
