@@ -7,5 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/events")
 @ResponseBody
+@CrossOrigin(origins = "https://eco-guard-ten.vercel.app")
 public class EventController {
 }
