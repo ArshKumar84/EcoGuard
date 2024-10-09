@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @AllArgsConstructor
 //@NoArgsConstructor
+@CrossOrigin(origins = "https://eco-guard-rjq29kcqh-arshkumar84s-projects.vercel.app")
 public class UserController {
 
     UserServiceImpl userService;
