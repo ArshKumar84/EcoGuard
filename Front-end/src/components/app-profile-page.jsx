@@ -32,7 +32,7 @@ const ProfilePage = () => {
     if (UserID) {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get(`http://ecoguard-522e.onrender.com/api/v1/users/${UserID}`);
+          const response = await axios.get(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`);
           setUser(response.data);
           setError(null);
         } catch (error) {
@@ -51,7 +51,7 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, user);
+      await axios.put(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, user);
       setIsEditing(false);
       setError(null);
     } catch (error) {
