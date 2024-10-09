@@ -8,6 +8,8 @@ import com.academic.EcoGuard.entities.User;
 import com.academic.EcoGuard.services.ConfirmationTokenService;
 import com.academic.EcoGuard.services.UserServiceImpl;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @ResponseBody
+@AllArgsConstructor
+//@NoArgsConstructor
 public class UserController {
 
     UserServiceImpl userService;
     ConfirmationTokenService tokenService;
 
-    public UserController(UserServiceImpl userService, ConfirmationTokenService tokenService) {
-        this.userService = userService;
-        this.tokenService = tokenService;
-    }
+//    public UserController(UserServiceImpl userService, ConfirmationTokenService tokenService) {
+//        this.userService = userService;
+//        this.tokenService = tokenService;
+//    }
 
     @PostMapping
     ResponseEntity<UserDto> create(
-            @Valid
+//            @Valid
             @RequestBody UserDto dto)
     {
         dto=userService.create(dto);
@@ -38,14 +42,28 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/email/{email}")
+    String otp(
+            @PathVariable String email
+    )
+    {
+        return tokenService.sendMail(email);
+
+    }
+
     @PostMapping("/verify-otp")
-    OtpDto auth(
+    ResponseEntity<Boolean> auth(
             @RequestBody OtpDto dto
 //            @RequestParam("id") String id,
 //            @RequestParam("token")String token
             )
     {
-        return tokenService.confirm(dto.getUserId(),dto.getOtp());
+        if(tokenService.confirm(dto.getUserId(),dto.getOtp()))
+        {
+            return ResponseEntity.ok(true);
+        }
+
+        return ResponseEntity.badRequest().body(false);
     }
 
     @PostMapping("/login")
