@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @AllArgsConstructor
 //@NoArgsConstructor
+@CrossOrigin(origins = "https://eco-guard-ten.vercel.app")
 public class ChallengeController {
 
     ChallengeServiceImpl service;
