@@ -64,7 +64,7 @@ public class ConfirmationTokenService {
 
     }
 
-    public void sendMail(String id)
+    public String sendMail(String id)
     {
         User user=userRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("User Not Found")
@@ -77,11 +77,13 @@ public class ConfirmationTokenService {
 
         mailSender.send(message);
 
+        return user.getToken().getToken();
+
     }
 
 
 
-    public OtpDto confirm(String id, String token)
+    public Boolean confirm(String id, String token)
     {
        String userToken  = userRepo.findById(id)
                 .orElseThrow(
@@ -89,13 +91,13 @@ public class ConfirmationTokenService {
                      new InvalidParametersException("Wrong Token")
                 ).getToken().getToken();
 
-       OtpDto dto = new OtpDto();
+
          if( userToken.equals(token))
          {
-             dto.setVerified(true);
+             return true;
          }
 
-         return dto;
+         return false;
                 
     }
 
