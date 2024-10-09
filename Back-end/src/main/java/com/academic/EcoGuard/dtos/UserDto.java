@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @Setter
 @Data
 @NoArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://eco-guard-rjq29kcqh-arshkumar84s-projects.vercel.app")
 public class UserDto {
 
     private String id;
