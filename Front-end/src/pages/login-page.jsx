@@ -36,7 +36,7 @@ const AuthPage = () => {
       let response;
       if (isSignUp) {
         // Sign up logic
-        response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users", {
+        response = await axios.post("https://ecoguard-522e.onrender/api/v1/users", {
           username,
           location,
           email,
