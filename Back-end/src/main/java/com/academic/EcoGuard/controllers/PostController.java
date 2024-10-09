@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     PostServiceImpl service;
 
+    public PostController(PostServiceImpl service) {
+        this.service = service;
+    }
+
     @PostMapping("/{id}")
     ResponseEntity<PostDto> create(@PathVariable String id, @RequestBody PostDto dto)
     {
