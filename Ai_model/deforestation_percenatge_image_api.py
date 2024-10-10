@@ -13,6 +13,11 @@ app = FastAPI()
 
 origins = [
     "http://ecoguard-522e.onrender.com",
+    "https://ecoguard-522e.onrender.com",
+    "http://localhost:3000",
+     "https://localhost:3000",
+    "https://eco-guard-ten.vercel.app",
+    "http://eco-guard-ten.vercel.app"
 ]
 
 app.add_middleware(
