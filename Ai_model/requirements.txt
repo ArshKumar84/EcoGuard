@@ -7,3 +7,8 @@ opencv-python-headless
 geopy
 uvicorn
 python-multipart
+numpy
+opencv-python
+pydantic
+scikit-learn==1.5.1
+scikit-learn-intelex  # Optimized version of scikit-learn
