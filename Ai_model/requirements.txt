@@ -7,3 +7,6 @@ opencv-python-headless
 geopy
 uvicorn
 python-multipart
+scikit-learn
+scikit-learn-intelex
+pandas
