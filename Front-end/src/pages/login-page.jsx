@@ -36,7 +36,7 @@ const AuthPage = () => {
       let response;
       if (isSignUp) {
         // Sign up logic
-        response = await axios.post("http://127.0.0.1:8080/api/v1/users", {
+        response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users", {
           username,
           location,
           email,
@@ -47,7 +47,7 @@ const AuthPage = () => {
         toast.info("Please enter the OTP sent to your email.");
       } else {
         // Log in logic
-        response = await axios.post("http://127.0.0.1:8080/api/v1/users/login", {
+        response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users/login", {
           username,
           password,
         });
@@ -81,7 +81,7 @@ const AuthPage = () => {
     const enteredOTP = otp.join('');
     try {
       // Replace this with your actual OTP verification API call
-      const response = await axios.post("http://127.0.0.1:8080/api/v1/users/verify-otp", {
+      const response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users/verify-otp", {
         userId: userData.id,
         otp: enteredOTP
       });
