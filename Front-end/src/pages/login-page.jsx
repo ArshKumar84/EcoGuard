@@ -86,7 +86,8 @@ const AuthPage = () => {
         otp: enteredOTP
       });
       
-      if (response.data.verified) {
+      if (response.data) {
+        console.log
         dispatch(setUserId(userData.id));
         localStorage.setItem('userId', userData.id);
         toast.success("OTP verified successfully! Redirecting to home page...");
