@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import axios from 'axios';
 
+
 const Map = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
   { ssr: false }
