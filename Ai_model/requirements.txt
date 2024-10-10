@@ -1,4 +1,12 @@
-fastapi
-uvicorn
-scikit-learn
-joblib
+fastapi==0.95.1
+pydantic==1.10.2
+joblib==1.2.0
+numpy==1.24.2
+sentinelhub==3.6.2
+opencv-python-headless==4.8.0.76
+geopy==2.3.0
+uvicorn==0.21.1
+python-multipart==0.0.5
+scikit-learn==1.2.2
+scikit-learn-intelex==2021.5.0
+pandas==1.5.3
