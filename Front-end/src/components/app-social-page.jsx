@@ -21,12 +21,15 @@ const SocialPage = () => {
 
 
    const [UserID, setUserID]=useState(null)
-  useEffect(() => {
+useEffect(() => {
+  if (typeof window !== "undefined") { // Ensure this runs only on the client
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
       setUserID(storedUserId);
     }
-  }, []);
+  }
+}, []);
+
 
   console.log(UserID);
 
@@ -98,30 +101,33 @@ const [user, setUser] = useState({
     ); // State to hold the content of the new post
   
     // Function to handle the submission of a new post
-    const handlePost = () => {
+  const handlePost = async () => {
+  if (newPostContent.trim() === '') return; // Prevent empty posts
 
+  const newPost = {
+    id: posts.length + 1, // Generate a new ID for the post
+    user: user.username, // Corrected the user reference
+    content: newPostContent,
+    likes: 0,
+    liked: false
+  };
 
-      try {
-      await axios.put(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, user);
-      setIsEditing(false);
-      setError(null);
-    } catch (error) {
-      console.error('Error saving user data:', error);
-      setError('Failed to save user data.');
-    }
-      if (newPostContent.trim() === '') return; // Prevent empty posts
-  
-      const newPost = {
-        id: posts.length + 1, // Generate a new ID for the post
-        user: {user.username}, // Replace with the actual user if needed
-        content: newPostContent,
-        likes: 0,
-        liked: false
-      };
-      console.log(user.username)
-      setPosts([newPost, ...posts]); // Add the new post to the posts array (at the top)
-      setNewPostContent(''); // Clear the textarea after posting
-    };
+  // Add the new post to the posts array
+  setPosts([newPost, ...posts]);
+
+  // Clear the textarea after posting
+  setNewPostContent('');
+
+  // If you need to save posts to the backend, do so here
+  try {
+    await axios.put(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, { posts: [...posts, newPost] });
+    setError(null);
+  } catch (error) {
+    console.error('Error saving post data:', error);
+    setError('Failed to save post data.');
+  }
+};
+
   
   const handleLikeClick = (postId) => {
     setPosts(posts.map(post => {
