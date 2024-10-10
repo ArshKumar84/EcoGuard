@@ -4,6 +4,7 @@ import React, { useState ,useEffect} from 'react'
 import { MapPin, Camera, Leaf, MessageSquare, Share2, Award, Users, Calendar, TreePine, Wind } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import axios from 'axios';
 
 const Map = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
@@ -18,18 +19,21 @@ const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { 
 
 const SocialPage = () => {
 
+
+   const [UserID, setUserID]=useState(null)
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserID(storedUserId);
+    }
+  }, []);
+
+  console.log(UserID);
+
   const [error, setError] = useState(null); // State to hold error message
 
-  const [UserID, setUserID]=useState(null)
-useEffect(() => {
-  const storedUserId = localStorage.getItem('userId');
-  if (storedUserId) {
-    setUserID(storedUserId);
-  }
-}, []);
 
-
-
+ 
 
 
 
@@ -40,22 +44,34 @@ const [user, setUser] = useState({
   
 });
 
-useEffect(() => {
-  if (UserID) {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`);
-        setUser(response.data);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setError('Failed to fetch user data.');
-      }
-    };
+ useEffect(() => {
+    if (UserID) {
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`);
+          setUser(response.data);
+          setError(null);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          setError('Failed to fetch user data.');
+        }
+      };
 
-    fetchUserData();
-  }
-}, [UserID]);
+      fetchUserData();
+    }
+  }, [UserID]);
+
+  const handleSave = async () => {
+    try {
+      await axios.put(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, user);
+      setIsEditing(false);
+      setError(null);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      setError('Failed to save user data.');
+    }
+  };
+
 
   const [posts, setPosts] = useState([
     { id: 1, user: 'John Doe', content: 'I just planted 5 trees today in EcoGuard\'s Tree Plantation Program!',  likes: 15 },
@@ -83,11 +99,21 @@ useEffect(() => {
   
     // Function to handle the submission of a new post
     const handlePost = () => {
+
+
+      try {
+      await axios.put(`https://ecoguard-522e.onrender.com/api/v1/users/${UserID}`, user);
+      setIsEditing(false);
+      setError(null);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      setError('Failed to save user data.');
+    }
       if (newPostContent.trim() === '') return; // Prevent empty posts
   
       const newPost = {
         id: posts.length + 1, // Generate a new ID for the post
-        user: 'Ecoguard', // Replace with the actual user if needed
+        user: {user.username}, // Replace with the actual user if needed
         content: newPostContent,
         likes: 0,
         liked: false
