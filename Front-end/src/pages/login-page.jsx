@@ -44,6 +44,16 @@ const AuthPage = () => {
         });
         setUserData(response.data);
         setShowOTP(true);
+        axios.get(`https://ecoguard-522e.onrender.com/api/v1/users/otp/${encodeURIComponent(response.data.id)}`)
+  .then(response => {
+    // handle success
+    console.log(response.data);
+  })
+  .catch(error => {
+    // handle error
+    console.error(error);
+  });
+
         toast.info("Please enter the OTP sent to your email.");
       } else {
         // Log in logic
@@ -87,7 +97,6 @@ const AuthPage = () => {
       });
       
       if (response.data) {
-        console.log
         dispatch(setUserId(userData.id));
         localStorage.setItem('userId', userData.id);
         toast.success("OTP verified successfully! Redirecting to home page...");
@@ -256,4 +265,4 @@ const InputField = ({ id, name, type, icon, placeholder, required }) => (
   </div>
 );
 
-export default AuthPage; 
+export default AuthPage;
