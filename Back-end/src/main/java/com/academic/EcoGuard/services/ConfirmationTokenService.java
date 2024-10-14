@@ -1,20 +1,20 @@
 package com.academic.EcoGuard.services;
 
 import com.academic.EcoGuard.dtos.CTokenDto;
-import com.academic.EcoGuard.dtos.OtpDto;
 import com.academic.EcoGuard.entities.CToken;
 import com.academic.EcoGuard.entities.User;
 import com.academic.EcoGuard.exceptionsHandler.InvalidParametersException;
 import com.academic.EcoGuard.exceptionsHandler.ResourceNotFoundException;
 import com.academic.EcoGuard.repositories.CTokenRepo;
 import com.academic.EcoGuard.repositories.UserRepo;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 
@@ -64,21 +64,22 @@ public class ConfirmationTokenService {
 
     }
 
-    public String sendMail(String id)
-    {
-        User user=userRepo.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("User Not Found")
+    @Async
+    public CompletableFuture<String> sendMail(String id) {
+        User user = userRepo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User Not Found")
         );
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject("Confirmation your email");
-        message.setText(user.getUsername() + " The confirmation code for sign up with EcoGuard is : "+ user.getToken().getToken());
+        message.setSubject("Confirmation of your email");
+        message.setText(user.getUsername() + " The confirmation code for sign up with EcoGuard is: " + user.getToken().getToken());
 
         mailSender.send(message);
 
-        return user.getToken().getToken();
-
+        return
+//        CompletableFuture.completedFuture(
+                CompletableFuture.completedFuture(user.getToken().getToken());
     }
 
 
