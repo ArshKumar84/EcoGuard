@@ -15,12 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @ResponseBody
 @AllArgsConstructor
 //@NoArgsConstructor
-@CrossOrigin(origins = "https://eco-guard-ten.vercel.app")
+@CrossOrigin("https://eco-guard-rjq29kcqh-arshkumar84s-projects.vercel.app")
 public class UserController {
 
     UserServiceImpl userService;
@@ -39,17 +41,17 @@ public class UserController {
         dto=userService.create(dto);
         String id = dto.getId();
         tokenService.create(id);
-        tokenService.sendMail(id);
+//        tokenService.sendMail(id);
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/email/{email}")
-    String otp(
+    @GetMapping("/otp/{email}")
+    CompletableFuture<String> otp(
             @PathVariable String email
     )
     {
+        System.out.println(email);
         return tokenService.sendMail(email);
-
     }
 
     @PostMapping("/verify-otp")
