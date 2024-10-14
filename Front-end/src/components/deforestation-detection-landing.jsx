@@ -22,209 +22,37 @@ import axios from 'axios';
 import Image from 'next/image';
 import EcoGuardLoader from '../components/EcoGuardLoader';
 
-const WeatherAQI = () => {
+const EcoGuardDashboard = () => {
+  // State management
   const [weatherData, setWeatherData] = useState(null);
   const [aqiData, setAqiData] = useState(null);
   const [error, setError] = useState(null);
-
-  const city = "Pinjore";
-  const apiKey = "cc47ca49c652020e0b96409835d4ba58";
-  const aqi = "f14bf78e017b9a66a8b0e26cde560505aee32fc2";
-
-  useEffect(() => {
-    const fetchWeatherData = async () => {
-      try {
-        const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
-        setWeatherData(weatherResponse.data);
-
-        const { lon, lat } = weatherResponse.data.coord;
-        const aqiResponse = await axios.get(`https://api.waqi.info/feed/${city}/?token=${aqi}`);
-        setAqiData(aqiResponse.data.data);
-      } catch (error) {
-        console.error("Error fetching weather or AQI data:", error);
-        setError(error.response ? error.response.data.message : error.message);
-      }
-    };
-
-    fetchWeatherData();
-  }, []);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Weather & AQI</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {error && <p className="text-red-600">Error: {error}</p>}
-        {weatherData && aqiData ? (
-          <div>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-4xl font-bold">{`${weatherData.main.temp}°C`}</p>
-                <p className="text-gray-600">{weatherData.weather[0].main}</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{`AQI: ${aqiData.aqi}`}</p>
-                <p className={`text-${aqiData.aqi < 51 ? "green" : "red"}-600`}>
-                  {aqiData.aqi < 51 ? "Good" : "Unhealthy"}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-between">
-              <div className="flex items-center">
-                <Sun className="mr-2" />
-                <span>UV Index: {weatherData.main.feels_like} (Moderate)</span>
-              </div>
-              <div className="flex items-center">
-                <Wind className="mr-2" />
-                <span>{`Wind: ${weatherData.wind.speed} km/h`}</span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          !error && <p>Loading...</p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-const LiveAlerts = () => {
-  const [alerts, setAlerts] = useState([]);
-  const [error, setError] = useState(null);
-  const aqi = "f14bf78e017b9a66a8b0e26cde560505aee32fc2";
-  const city = "Delhi";
-
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        const response = await axios.get(`https://api.waqi.info/feed/${city}/?token=${aqi}`);
-
-        if (response.data.status === "ok") {
-          const aqiData = response.data.data;
-          const pm25Value = aqiData.iaqi?.pm25?.v || "N/A";
-
-          setAlerts([
-            `AQI Level: ${aqiData.aqi} - ${aqiData.dominentpol}`,
-            `PM2.5: ${pm25Value}`,
-            `PM10: ${aqiData.iaqi?.pm10?.v || "N/A"}`,
-          ]);
-        } else {
-          throw new Error("Data fetch unsuccessful");
-        }
-      } catch (error) {
-        setError("Error fetching alerts");
-        console.error("Fetch error:", error);
-      }
-    }
-
-    fetchAlerts();
-  }, []);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <AlertTriangle className="mr-2 text-red-500" />
-          Live Alerts
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {error ? (
-          <p className="text-red-700">{error}</p>
-        ) : (
-          <ul className="space-y-2">
-            {alerts.map((alert, index) => (
-              <li key={index} className="text-red-700">{alert}</li>
-            ))}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-const TreePlantationStats = () => (
-  <Card>
-    <CardHeader>
-      <CardTitle className="flex items-center">
-        <Leaf className="mr-2 text-green-500" />
-        Trees Planted
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p className="text-4xl font-bold text-green-700">1,234,567</p>
-      <p className="text-gray-600">Trees planted through our initiatives</p>
-    </CardContent>
-  </Card>
-)
-
-const Footer = () => (
-  <footer className="bg-white rounded-lg shadow-md p-6 mt-6">
-    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-      <Link href="/Community" className="flex items-center text-green-700 hover:text-green-900">
-        <Leaf className="mr-2" />
-        <span>Join Tree Plantation Drive</span>
-      </Link>
-      <Link href="/News" className="flex items-center text-blue-700 hover:text-blue-900">
-        <Newspaper className="mr-2" />
-        Environmental News & Blogs
-      </Link>
-      <Link href="/donation-page" className="flex items-center text-red-700 hover:text-red-900">
-        <Heart className="mr-2" />
-        Donate
-      </Link>
-    </div>
-  </footer>
-)
-
-const DeforestationDetection = ({ location, setLocation, sendDeforestationRequest, resData, loading }) => (
-  <div className="flex mb-6">
-    <input
-      type="text"
-      placeholder="Enter location (city, address, or GPS coordinates)"
-      className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      value={location}
-      onChange={(e) => setLocation(e.target.value)}
-    />
-    <button
-      onClick={sendDeforestationRequest}
-      className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center"
-    >
-      <Search className="mr-2" /> Search for Deforestation
-    </button>
-  </div>
-);
-
-const HomePage = () => {
-  const [aqi, setAqi] = useState(null);
-  const [treesNeeded, setTreesNeeded] = useState(0);
-  const [graphData, setGraphData] = useState([]);
   const [userTreesPledge, setUserTreesPledge] = useState(0);
-  const [location, setLocation] = useState('');
   const [deforestationDetected, setDeforestationDetected] = useState(false);
   const [deforestationPercentage, setDeforestationPercentage] = useState('');
   const [loading, setLoading] = useState(false);
   const [resData, setResData] = useState({ message: "", deforestation_percentage: "", satellite_image: '' });
-  const [error, setError] = useState(null);
-
-  const fetchAQI = async () => {
-    try {
-      const response = await axios.get(`https://api.waqi.info/feed/Delhi/?token=f14bf78e017b9a66a8b0e26cde560505aee32fc2`);
-      const fetchedAQI = response.data.data.aqi;
-      setAqi(fetchedAQI);
-      setTreesNeeded(Math.floor(fetchedAQI / 50));
-    } catch (error) {
-      console.error("Error fetching AQI data:", error);
-      setError("Error fetching AQI data");
-    }
-  };
+  const city = "Delhi"; // Use any default city for AQI and weather
 
   useEffect(() => {
-    fetchAQI();
+    const fetchWeatherAndAQIData = async () => {
+      try {
+        const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=YOUR_WEATHER_API_KEY`);
+        const { lon, lat } = weatherResponse.data.coord;
+        const aqiResponse = await axios.get(`https://api.waqi.info/feed/${city}/?token=YOUR_AQI_API_KEY`);
+
+        setWeatherData(weatherResponse.data);
+        setAqiData(aqiResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError(error.response ? error.response.data.message : error.message);
+      }
+    };
+
+    fetchWeatherAndAQIData();
   }, []);
 
-  const sendDeforestationRequest = async () => {
+  const sendDeforestationRequest = async (location) => {
     setLoading(true);
     try {
       const response = await axios.get(`/api/deforestation?location=${location}`);
@@ -239,43 +67,94 @@ const HomePage = () => {
     }
   };
 
+  const getAQIColor = (aqi) => {
+    if (aqi < 51) return 'text-green-500';
+    if (aqi < 101) return 'text-yellow-500';
+    if (aqi < 151) return 'text-orange-500';
+    return 'text-red-500';
+  };
+
+  const getAQIDescription = (aqi) => {
+    if (aqi < 51) return "Good";
+    if (aqi < 101) return "Moderate";
+    if (aqi < 151) return "Unhealthy for Sensitive Groups";
+    return "Unhealthy";
+  };
+
+  const [graphData, setGraphData] = useState([]);
+
   useEffect(() => {
-    if (treesNeeded > 0) {
+    if (aqiData) {
+      const treesNeeded = Math.floor(aqiData.aqi / 50);
       const data = [];
-      let currentAQI = aqi;
+      let currentAQI = aqiData.aqi;
       const treesPerWeek = Math.floor(treesNeeded / 4);
-      
+
       for (let week = 0; week <= 4; week++) {
         data.push({
           week: `Week ${week}`,
           aqi: currentAQI,
-          trees: week * treesPerWeek
+          trees: week * treesPerWeek,
         });
         currentAQI = Math.max(50, currentAQI - (treesPerWeek * 0.1));
       }
 
       setGraphData(data);
     }
-  }, [treesNeeded, aqi]);
+  }, [aqiData]);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center">EcoGuard Dashboard</h1>
+      {error && <p className="text-red-600">Error: {error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <WeatherAQI />
+        <Card>
+          <CardHeader>
+            <CardTitle>Weather & AQI</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {weatherData && aqiData ? (
+              <div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-4xl font-bold">{`${weatherData.main.temp}°C`}</p>
+                    <p className="text-gray-600">{weatherData.weather[0].main}</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{`AQI: ${aqiData.aqi}`}</p>
+                    <p className={`text-${getAQIColor(aqiData.aqi)}`}>
+                      {getAQIDescription(aqiData.aqi)}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-between">
+                  <div className="flex items-center">
+                    <Sun className="mr-2" />
+                    <span>UV Index: {weatherData.main.feels_like} (Moderate)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Wind className="mr-2" />
+                    <span>{`Wind: ${weatherData.wind.speed} km/h`}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle>AQI Impact</CardTitle>
           </CardHeader>
           <CardContent>
-            {aqi !== null ? (
+            {aqiData ? (
               <div>
-                <p className={`text-6xl font-bold ${getAQIColor(aqi)}`}>{aqi}</p>
-                <p className="text-2xl mt-2">{getAQIDescription(aqi)}</p>
-                <Progress value={(aqi / 500) * 100} className="mt-4" />
-                <p className="mt-4">Trees needed to plant this month: {treesNeeded}</p>
-                <p>Predicted AQI after planting {userTreesPledge} trees: 
-                  {Math.max(0, aqi - (0.05 * userTreesPledge * 5) / 1000)}</p>
+                <p className={`text-6xl font-bold ${getAQIColor(aqiData.aqi)}`}>{aqiData.aqi}</p>
+                <p className="text-2xl mt-2">{getAQIDescription(aqiData.aqi)}</p>
+                <Progress value={(aqiData.aqi / 500) * 100} className="mt-4" />
+                <p className="mt-4">Predicted AQI after planting {userTreesPledge} trees: 
+                  {Math.max(0, aqiData.aqi - (0.05 * userTreesPledge * 5) / 1000)}</p>
               </div>
             ) : (
               <p>Loading AQI data...</p>
@@ -284,8 +163,29 @@ const HomePage = () => {
         </Card>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <LiveAlerts />
-        <TreePlantationStats />
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <AlertTriangle className="mr-2 text-red-500" />
+              Live Alerts
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>No live alerts available.</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Leaf className="mr-2 text-green-500" />
+              Trees Planted
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-green-700">1,234,567</p>
+            <p className="text-gray-600">Trees planted through our initiatives</p>
+          </CardContent>
+        </Card>
       </div>
       <Tabs defaultValue="graph" className="mb-8">
         <TabsList className="grid w-full grid-cols-2">
@@ -348,43 +248,48 @@ const HomePage = () => {
           </Card>
         </TabsContent>
       </Tabs>
-      <DeforestationDetection 
-        location={location}
-        setLocation={setLocation}
-        sendDeforestationRequest={sendDeforestationRequest}
-        resData={resData}
-        loading={loading}
-      />
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Enter location"
+          className="p-2 border border-gray-300 rounded"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              sendDeforestationRequest(e.target.value);
+            }
+          }}
+        />
+        <Button onClick={() => sendDeforestationRequest('YourLocation')}>Check Deforestation</Button>
+      </div>
       <div className="mb-6 mt-6 bg-gray-200 h-[40rem] flex items-center justify-center rounded-md overflow-hidden">
         {loading ? (
           <EcoGuardLoader duration={15000} />
         ) : (
           <Image
-            src={resData.satellite_image ? resData.satellite_image : '/images/placeholder.png'}
-            width={300} 
+            src={resData.satellite_image || '/images/placeholder.png'}
+            width={300}
             height={300}
             alt="Satellite view"
             className={resData.satellite_image ? 'w-full h-full object-cover' : 'w-300 h-300 object-contain'}
           />
         )}
       </div>
-      <div className={`mb-6 p-4 rounded-md ${resData.message === "Deforestation detected" ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+      <div className={`mb-6 p-4 rounded-md ${deforestationDetected ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
         <div className="flex items-center">
-          {resData.message === "Deforestation detected" ? (
+          {deforestationDetected ? (
             <AlertTriangle className="h-6 w-6 mr-2" />
           ) : (
             <Leaf className="h-6 w-6 mr-2" />
           )}
           <p className="font-semibold">
-            {resData.message === "Deforestation detected"
+            {deforestationDetected
               ? 'Warning: Deforestation detected in the specified area.'
               : 'Good news: No deforestation detected in the specified area.'}
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
 
-export default HomePage;
+export default EcoGuardDashboard;
