@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stars } from '@react-three/drei';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
 import { Leaf, User, Lock, Mail, Shield } from 'lucide-react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -56,6 +54,9 @@ const AuthPage = () => {
         dispatch(setUserId(response.data)); 
         localStorage.setItem('userId', response.data);
         toast.success("Successfully logged in! Redirecting to home page...");
+        // setTimeout(() => {
+        //   window.location.href = '/Home';
+        // }, 2000);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -79,12 +80,14 @@ const AuthPage = () => {
     setIsLoading(true);
     const enteredOTP = otp.join('');
     try {
+      // Replace this with your actual OTP verification API call
       const response = await axios.post("https://ecoguard-522e.onrender.com/api/v1/users/verify-otp", {
         userId: userData.id,
         otp: enteredOTP
       });
       
       if (response.data) {
+        console.log
         dispatch(setUserId(userData.id));
         localStorage.setItem('userId', userData.id);
         toast.success("OTP verified successfully! Redirecting to home page...");
@@ -103,20 +106,14 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <Canvas className="absolute inset-0 z-0">
-        <Stars />
-        <OrbitControls />
-      </Canvas>
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl z-10">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
         <div>
           <div className="flex justify-center">
-            <div className="relative">
-              <Leaf className="h-12 w-12 text-green-600 transform transition-transform hover:rotate-180" />
-            </div>
+            <Leaf className="h-12 w-12 text-green-600" />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 transform transition-transform hover:scale-110">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {showOTP ? "Verify OTP" : (isSignUp ? "Join EcoGuard" : "Welcome back")}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
@@ -128,13 +125,13 @@ const AuthPage = () => {
           <div className="flex justify-center space-x-4">
             <button
               onClick={() => setIsSignUp(true)}
-              className={`px-4 py-2 rounded-full transform transition-transform hover:scale-105 ${isSignUp ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`}
+              className={`px-4 py-2 rounded-full ${isSignUp ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`}
             >
               Sign Up
             </button>
             <button
               onClick={() => setIsSignUp(false)}
-              className={`px-4 py-2 rounded-full transform transition-transform hover:scale-105 ${!isSignUp ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`}
+              className={`px-4 py-2 rounded-full ${!isSignUp ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`}
             >
               Log In
             </button>
@@ -151,14 +148,14 @@ const AuthPage = () => {
                   maxLength="1"
                   value={data}
                   onChange={(e) => handleOTPChange(e.target, index)}
-                  className="w-12 h-12 border-2 rounded-lg text-center text-xl focus:border-green-500 focus:outline-none transform transition-transform hover:scale-110"
+                  className="w-12 h-12 border-2 rounded-lg text-center text-xl focus:border-green-500 focus:outline-none"
                 />
               ))}
             </div>
             <button
               onClick={handleVerifyOTP}
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isLoading && 'opacity-50'} transform transition-transform hover:scale-110`}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isLoading && 'opacity-50'}`}
             >
               {isLoading ? "Verifying..." : "Verify OTP"}
             </button>
@@ -219,7 +216,7 @@ const AuthPage = () => {
                   name="terms"
                   type="checkbox"
                   required
-                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded transform transition-transform hover:scale-110"
+                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
                   I agree to the <a href="#" className="font-medium text-green-600 hover:text-green-500">Terms and Conditions</a>
@@ -230,7 +227,7 @@ const AuthPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isLoading && 'opacity-50'} transform transition-transform hover:scale-110`}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isLoading && 'opacity-50'}`}
             >
               {isLoading ? "Loading..." : isSignUp ? "Sign Up" : "Log In"}
             </button>
@@ -241,11 +238,11 @@ const AuthPage = () => {
   );
 };
 
-// Reusable Input Component with 3D effect
+// Reusable Input Component
 const InputField = ({ id, name, type, icon, placeholder, required }) => (
   <div>
     <label htmlFor={id} className="sr-only">{placeholder}</label>
-    <div className="flex items-center transform transition-transform hover:scale-105">
+    <div className="flex items-center">
       {icon}
       <input
         id={id}
@@ -259,4 +256,4 @@ const InputField = ({ id, name, type, icon, placeholder, required }) => (
   </div>
 );
 
-export default AuthPage;
+export default AuthPage; 
