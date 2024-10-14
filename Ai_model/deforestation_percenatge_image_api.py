@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 
-clf = joblib.load('./deforestation_percentage_model_intel_1.joblib')
+clf = joblib.load('./deforestation_percentage_model.joblib')
 
 
 config = SHConfig()
