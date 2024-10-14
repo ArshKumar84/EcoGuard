@@ -67,7 +67,7 @@ export function DeforestationDetectionLandingJsx() {
   const sendDeforestationRequest = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/deforestation', {
+      const response = await axios.post('https://ecoguard-522e.onrender.com/deforestation', {
         area_name: location // Use the location input value here
       });
 
@@ -141,7 +141,7 @@ export function DeforestationDetectionLandingJsx() {
   }, [location]);
 
   return (
-    <div className="container mx-auto px-0 py-0">
+    <div className="container  px-0 py-0">
       <header className="bg-green-600 text-white py-6">
         <div className="container mx-auto px-4">
         </div>
