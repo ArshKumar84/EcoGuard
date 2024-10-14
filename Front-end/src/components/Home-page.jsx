@@ -1,87 +1,349 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { Globe, Leaf } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from 'recharts';
+import { Leaf, AlertTriangle, Wind, Sun, Newspaper, Heart } from 'lucide-react';
+import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
+import { Progress } from "@/components/ui/progress"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from 'next/link'
+import axios from 'axios'
 
-const HomePage = ({ duration = 10000 }) => {
-  const [progress, setProgress] = useState(0);
-  const [showExtendedMessage, setShowExtendedMessage] = useState(false);
+const WeatherAQI = () => {
+  const [weatherData, setWeatherData] = useState(null)
+  const [aqiData, setAqiData] = useState(null)
+  const [error, setError] = useState(null)
+
+  const city = "Pinjore"
+  const apiKey = "cc47ca49c652020e0b96409835d4ba58"
+  const aqi = "f14bf78e017b9a66a8b0e26cde560505aee32fc2"
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prevProgress + 1;
-      });
-    }, duration / 100);
+    const fetchWeatherData = async () => {
+      try {
+        const weatherResponse = await axios.get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+        )
+        setWeatherData(weatherResponse.data)
 
-    const timeout = setTimeout(() => {
-      setShowExtendedMessage(true);
-    }, duration);
+        const { lon, lat } = weatherResponse.data.coord
+        const aqiResponse = await axios.get(`https://api.waqi.info/feed/${city}/?token=${aqi}`)
+        setAqiData(aqiResponse.data.data)
+      } catch (error) {
+        console.error("Error fetching weather or AQI data:", error)
+        setError(error.response ? error.response.data.message : error.message)
+      }
+    }
 
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [duration]);
+    fetchWeatherData()
+  }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-b from-green-50 to-blue-50">
-  <div className="relative">
-    <svg className="w-32 h-32" viewBox="0 0 100 100">
-      <circle
-        className="text-green-200 stroke-current"
-        strokeWidth="4"
-        cx="50"
-        cy="50"
-        r="48"
-        fill="none"
-      />
-      <circle
-        className="text-green-500 stroke-current"
-        strokeWidth="4"
-        strokeLinecap="round"
-        cx="50"
-        cy="50"
-        r="48"
-        fill="none"
-        style={{
-          strokeDasharray: 302,
-          strokeDashoffset: 302 - (progress / 100) * 302,
-        }}
-      />
-    </svg>
-    {/* <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      {progress % 2 === 0 ? (
-        <Globe className="w-16 h-16 text-green-600 animate-spin-slow" />
-      ) : (
-        <Leaf className="w-16 h-16 text-green-600 animate-bounce" />
-      )}
-    </div> */}
-  </div>
-  <p className="mt-4 text-lg font-semibold text-green-800">
-    Fetching satellite data..
-  </p>
-  <p className="mt-2 text-sm text-green-600 max-w-md text-center">
-    Please wait while we analyze the deforested area for your selected location.
-  </p>
-  {/* {showExtendedMessage && (
-    <p className="mt-4 text-sm text-orange-500 max-w-md text-center animate-fade-in">
-      Satellite images are taking a moment... Hang tight!
-    </p>
-  )} */}
-  {/* <div className="mt-8 flex items-center space-x-2 bg-blue-100 p-3 rounded-lg">
-    <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
-    <p className="text-sm text-blue-700">
-      Tracking environmental changes... Stay informed with AQI and real-time deforestation data.
-    </p>
-  </div>*/}
-</div> 
-
+    (<Card>
+      <CardHeader>
+        <CardTitle>Weather & AQI</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error && <p className="text-red-600">Error: {error}</p>}
+        {weatherData && aqiData ? (
+          <div>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-4xl font-bold">{`${weatherData.main.temp}°C`}</p>
+                <p className="text-gray-600">{weatherData.weather[0].main}</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{`AQI: ${aqiData.aqi}`}</p>
+                <p className={`text-${aqiData.aqi < 51 ? "green" : "red"}-600`}>
+                  {aqiData.aqi < 51 ? "Good" : "Unhealthy"}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div className="flex items-center">
+                <Sun className="mr-2" />
+                <span>UV Index: {weatherData.main.feels_like} (Moderate)</span>
+              </div>
+              <div className="flex items-center">
+                <Wind className="mr-2" />
+                <span>{`Wind: ${weatherData.wind.speed} km/h`}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          !error && <p>Loading...</p>
+        )}
+      </CardContent>
+    </Card>)
   );
-};
+}
 
-export default HomePage;
+const LiveAlerts = () => {
+  const [alerts, setAlerts] = useState([])
+  const [error, setError] = useState(null)
+  const aqi = "f14bf78e017b9a66a8b0e26cde560505aee32fc2"
+  const city = "Delhi"
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const response = await axios.get(`https://api.waqi.info/feed/${city}/?token=${aqi}`)
+    
+        if (response.data.status === "ok") {
+          const aqiData = response.data.data
+    
+          const pm25Value = aqiData.iaqi?.pm25?.v || "N/A"
+          const pm10Value = aqiData.iaqi?.pm10?.v || "N/A"
+    
+          setAlerts([
+            `AQI Level: ${aqiData.aqi} - ${aqiData.dominentpol}`,
+            `PM2.5: ${pm25Value}`,
+            `PM10: ${pm10Value}`,
+          ])
+        } else {
+          throw new Error("Data fetch unsuccessful")
+        }
+      } catch (error) {
+        setError("Error fetching alerts")
+        console.error("Fetch error:", error)
+      }
+    }
+    
+    fetchAlerts()
+  }, [])
+
+  return (
+    (<Card>
+      <CardHeader>
+        <CardTitle className="flex items-center">
+          <AlertTriangle className="mr-2 text-red-500" />
+          Live Alerts
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error ? (
+          <p className="text-red-700">{error}</p>
+        ) : (
+          <ul className="space-y-2">
+            {alerts.map((alert, index) => (
+              <li key={index} className="text-red-700">{alert}</li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>)
+  );
+}
+
+const TreePlantationStats = () => (
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center">
+        <Leaf className="mr-2 text-green-500" />
+        Trees Planted
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-4xl font-bold text-green-700">1,234,567</p>
+      <p className="text-gray-600">Trees planted through our initiatives</p>
+    </CardContent>
+  </Card>
+)
+
+const Footer = () => (
+  <footer className="bg-white rounded-lg shadow-md p-6 mt-6">
+    <div
+      className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      <Link
+        href="/Community"
+        className="flex items-center text-green-700 hover:text-green-900">
+        <Leaf className="mr-2" />
+        <span>Join Tree Plantation Drive</span>
+      </Link>
+      <Link
+        href="/News"
+        className="flex items-center text-blue-700 hover:text-blue-900">
+        <Newspaper className="mr-2" />
+        Environmental News & Blogs
+      </Link>
+      <Link
+        href="/donation-page"
+        className="flex items-center text-red-700 hover:text-red-900">
+        <Heart className="mr-2" />
+        Donate
+      </Link>
+    </div>
+  </footer>
+)
+
+const HomePage = () => {
+  const [aqi, setAqi] = useState(null)
+  const [treesNeeded, setTreesNeeded] = useState(0)
+  const [graphData, setGraphData] = useState([])
+  const [userTreesPledge, setUserTreesPledge] = useState(0)
+
+  useEffect(() => {
+    const fetchAQI = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.waqi.info/feed/Delhi/?token=f14bf78e017b9a66a8b0e26cde560505aee32fc2`
+        )
+        const fetchedAQI = response.data.data.aqi
+        setAqi(fetchedAQI)
+        setTreesNeeded(Math.floor(fetchedAQI * 10))
+      } catch (error) {
+        console.error("Error fetching AQI:", error)
+        // Fallback to simulated data
+        const simulatedAQI = Math.floor(Math.random() * 300) + 50
+        setAqi(simulatedAQI)
+        setTreesNeeded(Math.floor(simulatedAQI * 10))
+      }
+    }
+
+    fetchAQI()
+  }, [])
+
+  useEffect(() => {
+    if (treesNeeded > 0) {
+      const data = []
+      let currentAQI = aqi
+      const treesPerWeek = Math.floor(treesNeeded / 4)
+      
+      for (let week = 0; week <= 4; week++) {
+        data.push({
+          week: `Week ${week}`,
+          aqi: currentAQI,
+          trees: week * treesPerWeek
+        })
+        currentAQI = Math.max(50, currentAQI - (treesPerWeek * 0.1))
+      }
+
+      setGraphData(data)
+    }
+  }, [treesNeeded, aqi])
+
+  const getAQIColor = (aqi) => {
+    if (aqi <= 50) return 'text-green-500'
+    if (aqi <= 100) return 'text-yellow-500'
+    if (aqi <= 150) return 'text-orange-500'
+    if (aqi <= 200) return 'text-red-500'
+    if (aqi <= 300) return 'text-purple-500'
+    return 'text-rose-700'
+  }
+
+  const getAQIDescription = (aqi) => {
+    if (aqi <= 50) return 'Good'
+    if (aqi <= 100) return 'Moderate'
+    if (aqi <= 150) return 'Unhealthy for Sensitive Groups'
+    if (aqi <= 200) return 'Unhealthy'
+    if (aqi <= 300) return 'Very Unhealthy'
+    return 'Hazardous'
+  }
+
+  return (
+    (<div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8 text-center">EcoGuard Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <WeatherAQI />
+        <Card>
+          <CardHeader>
+            <CardTitle>AQI Impact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {aqi !== null ? (
+              <div>
+                <p className={`text-6xl font-bold ${getAQIColor(aqi)}`}>{aqi}</p>
+                <p className="text-2xl mt-2">{getAQIDescription(aqi)}</p>
+                <Progress value={(aqi / 500) * 100} className="mt-4" />
+                <p className="mt-4">Trees needed to plant this month: {treesNeeded}</p>
+              </div>
+            ) : (
+              <p>Loading AQI data...</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <LiveAlerts />
+        <TreePlantationStats />
+      </div>
+      <Tabs defaultValue="graph" className="mb-8">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="graph">AQI Reduction Graph</TabsTrigger>
+          <TabsTrigger value="pledge">Tree Pledge</TabsTrigger>
+        </TabsList>
+        <TabsContent value="graph">
+          <Card>
+            <CardHeader>
+              <CardTitle>AQI Reduction Projection</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={graphData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="week" />
+                  <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                  <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                  <Tooltip />
+                  <Legend />
+                  <Area
+                    type="monotone"
+                    dataKey="aqi"
+                    yAxisId="left"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                    fillOpacity={0.3} />
+                  <Area
+                    type="monotone"
+                    dataKey="trees"
+                    yAxisId="right"
+                    stroke="#82ca9d"
+                    fill="#82ca9d"
+                    fillOpacity={0.3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="pledge">
+          <Card>
+            <CardHeader>
+              <CardTitle>Make Your Tree Pledge</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p>How many trees will you plant this month?</p>
+                <Slider
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={[userTreesPledge]}
+                  onValueChange={(value) => setUserTreesPledge(value[0])} />
+                <p className="text-2xl font-bold">Your pledge: {userTreesPledge} trees</p>
+                <Progress value={(userTreesPledge / treesNeeded) * 100} className="mt-4" />
+                <p>You're contributing {((userTreesPledge / treesNeeded) * 100).toFixed(2)}% of the needed trees!</p>
+                <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
+                  Confirm Pledge
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+      <Footer />
+    </div>)
+  );
+}
+
+export default HomePage
