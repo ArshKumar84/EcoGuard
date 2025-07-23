@@ -67,7 +67,7 @@ export function DeforestationDetectionLandingJsx() {
   const sendDeforestationRequest = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('https://ecoguard-model.onrender.com/deforestation', {
+      const response = await axios.post('https://arsh1101-defo-detect.hf.space/deforestation', {
         area_name: location // Use the location input value here
       });
 
