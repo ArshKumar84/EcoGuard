@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin("https://eco-guard-rjq29kcqh-arshkumar84s-projects.vercel.app")
-public class UserController {
+public class PingController {
 
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
